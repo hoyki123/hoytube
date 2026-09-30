@@ -83,20 +83,33 @@ const NAV_GROUPS: NavGroup[] = [
 ];
 
 type SidebarProps = {
+  /**
+   * Docked: sits beside the content on large screens and is a drawer below.
+   * Not docked: a drawer at every screen size (e.g. the watch page).
+   */
+  docked: boolean;
   desktopOpen: boolean;
-  mobileOpen: boolean;
+  drawerOpen: boolean;
   onClose: () => void;
 };
 
-export function Sidebar({ desktopOpen, mobileOpen, onClose }: SidebarProps) {
+export function Sidebar({
+  docked,
+  desktopOpen,
+  drawerOpen,
+  onClose,
+}: SidebarProps) {
   const pathname = usePathname();
 
   return (
     <>
-      {mobileOpen && (
+      {drawerOpen && (
         <div
           aria-hidden
-          className="fixed inset-0 z-40 bg-black/60 lg:hidden"
+          className={cn(
+            "fixed inset-0 z-40 bg-black/60",
+            docked && "lg:hidden",
+          )}
           onClick={onClose}
         />
       )}
@@ -105,14 +118,19 @@ export function Sidebar({ desktopOpen, mobileOpen, onClose }: SidebarProps) {
         aria-label="Main navigation"
         className={cn(
           "fixed inset-y-0 left-0 z-50 w-64 shrink-0 overflow-y-auto bg-canvas px-4 pb-6 transition-[translate,visibility] duration-200",
-          "lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:translate-x-0 lg:border-r lg:border-line lg:pt-4",
-          mobileOpen
-            ? "translate-x-0"
-            : "max-lg:invisible max-lg:-translate-x-full",
-          !desktopOpen && "lg:hidden",
+          docked &&
+            "lg:sticky lg:top-16 lg:z-auto lg:h-[calc(100dvh-4rem)] lg:translate-x-0 lg:border-r lg:border-line lg:pt-4",
+          docked && !desktopOpen && "lg:hidden",
+          drawerOpen && "translate-x-0",
+          !drawerOpen &&
+            (docked
+              ? "max-lg:invisible max-lg:-translate-x-full"
+              : "invisible -translate-x-full"),
         )}
       >
-        <div className="flex h-16 items-center gap-3 lg:hidden">
+        <div
+          className={cn("flex h-16 items-center gap-3", docked && "lg:hidden")}
+        >
           <button
             type="button"
             onClick={onClose}

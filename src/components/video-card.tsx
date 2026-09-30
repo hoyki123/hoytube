@@ -1,5 +1,4 @@
 import { EllipsisVertical } from "lucide-react";
-import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -13,8 +12,7 @@ type VideoCardProps = {
 };
 
 export function VideoCard({ video, eager = false }: VideoCardProps) {
-  // The watch page is not built yet.
-  const href = `/watch/${video.id}` as Route;
+  const href = `/watch/${video.id}` as const;
 
   return (
     <article>
